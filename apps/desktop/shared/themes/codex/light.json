@@ -1,0 +1,9 @@
+{
+  "accent": "#0169CC",
+  "background": "#FFFFFF",
+  "foreground": "#0D0D0D",
+  "ui-font": "Geist, Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+  "editor-font": "Geist, Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+  "translucent": 0,
+  "contrast": 40
+}

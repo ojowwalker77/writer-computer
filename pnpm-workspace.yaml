@@ -1,0 +1,49 @@
+packages:
+  - apps/*
+  - apps/desktop/e2e
+  - packages/*
+  - tools/*
+
+catalog:
+  "@codemirror/autocomplete": ^6.20.0
+  "@codemirror/commands": ^6.10.3
+  "@codemirror/lang-markdown": ^6.5.0
+  "@codemirror/language": ^6.12.2
+  "@codemirror/language-data": ^6.5.2
+  "@codemirror/search": ^6.7.0
+  "@codemirror/state": ^6.6.0
+  "@codemirror/view": ^6.40.0
+  "@hugeicons/core-free-icons": ^4.1.1
+  "@hugeicons/react": ^1.1.6
+  "@lezer/highlight": ^1.2.3
+  "@lezer/markdown": ^1.6.1
+  "@prosemark/core": ^0.0.5
+  "@tailwindcss/vite": ^4.2.2
+  "@tauri-apps/plugin-clipboard-manager": ^2.3.2
+  "@tauri-apps/plugin-dialog": ^2.6.0
+  "@tauri-apps/plugin-store": ^2.4.2
+  "@types/node": ^24
+  "@welldone-software/why-did-you-render": ^10.0.1
+  cmdk: ^1.1.1
+  dompurify: ^3.3.3
+  mermaid: ^11.14.0
+  react-resizable-panels: ^4.7.4
+  tailwindcss: ^4.2.2
+  typescript: ^5
+  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vite-plus: latest
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  yaml: ^2.8.3
+  zustand: ^5.0.12
+
+catalogMode: prefer
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"

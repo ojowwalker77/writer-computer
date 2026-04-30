@@ -1,0 +1,51 @@
+{
+  "name": "desktop",
+  "version": "0.0.21",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "catalog:",
+    "@codemirror/commands": "catalog:",
+    "@codemirror/lang-markdown": "catalog:",
+    "@codemirror/language": "catalog:",
+    "@codemirror/language-data": "catalog:",
+    "@codemirror/search": "catalog:",
+    "@codemirror/state": "catalog:",
+    "@codemirror/view": "catalog:",
+    "@hugeicons/core-free-icons": "catalog:",
+    "@hugeicons/react": "catalog:",
+    "@lezer/highlight": "catalog:",
+    "@lezer/markdown": "catalog:",
+    "@prosemark/core": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-clipboard-manager": "catalog:",
+    "@tauri-apps/plugin-dialog": "catalog:",
+    "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-store": "catalog:",
+    "@welldone-software/why-did-you-render": "catalog:",
+    "cmdk": "catalog:",
+    "dompurify": "catalog:",
+    "mermaid": "catalog:",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-resizable-panels": "catalog:",
+    "tailwindcss": "catalog:",
+    "yaml": "catalog:",
+    "zustand": "catalog:"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
+}

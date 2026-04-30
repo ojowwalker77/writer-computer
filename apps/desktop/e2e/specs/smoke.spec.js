@@ -1,0 +1,68 @@
+import { strictEqual } from "node:assert/strict";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+// Smoke tests: prove the full E2E pipeline (cargo build with `e2e` feature →
+// tauri-webdriver intermediary → embedded plugin → WKWebView → WebdriverIO)
+// works end-to-end. Assertions are intentionally minimal — the goal is
+// infrastructure validation, not feature coverage.
+describe("Writer app", function () {
+  it("mounts the React app", async function () {
+    // Both the welcome screen and the editor branch render
+    // `<div class="animate-fade-in">` as the top-level wrapper once the
+    // startup state resolves (see apps/desktop/src/App.tsx). Asserting on
+    // that wrapper makes the test independent of whether the app restored a
+    // previous workspace.
+    const wrapper = await $(".animate-fade-in");
+    await wrapper.waitForExist({ timeout: 15_000 });
+  });
+
+  it("creates a file and writes hello world via the Tauri IPC bridge", async function () {
+    // Wait for the React app to be mounted; the IPC bridge is reachable as
+    // soon as the WebView's JS context is alive, but waiting for mount
+    // matches what a real interaction would see.
+    await $(".animate-fade-in").waitForExist({ timeout: 15_000 });
+
+    // Use a fresh temp directory so this test never touches the user's
+    // recent workspaces or the dev install state.
+    const workspace = mkdtempSync(join(tmpdir(), "writer-e2e-"));
+    const filePath = join(workspace, "hello.md");
+    const expectedContent = "hello world";
+
+    try {
+      // Drive the real Rust IPC commands from inside the WKWebView. Tauri v2
+      // always exposes `window.__TAURI_INTERNALS__.invoke` as the low-level
+      // bridge — the same primitive `@tauri-apps/api/core`'s `invoke` wraps —
+      // regardless of the `withGlobalTauri` setting in tauri.conf.json.
+      //
+      // We use `executeAsync` (W3C `execute/async`) instead of `execute`
+      // because the IPC calls are async; `execute/sync` cannot serialize a
+      // Promise return value. The injected `done` callback receives `null`
+      // on success or an error message string on failure.
+      const error = await browser.executeAsync(
+        (path, content, done) => {
+          (async () => {
+            try {
+              const { invoke } = window.__TAURI_INTERNALS__;
+              await invoke("create_file", { path });
+              await invoke("write_file", { path, content });
+              done(null);
+            } catch (e) {
+              done(e && e.message ? e.message : String(e));
+            }
+          })();
+        },
+        filePath,
+        expectedContent,
+      );
+
+      strictEqual(error, null, `IPC invoke failed: ${error}`);
+
+      // Verify on the host filesystem that the IPC actually wrote the bytes.
+      strictEqual(readFileSync(filePath, "utf-8"), expectedContent);
+    } finally {
+      rmSync(workspace, { recursive: true, force: true });
+    }
+  });
+});

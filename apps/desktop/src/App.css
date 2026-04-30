@@ -1,0 +1,289 @@
+@import "tailwindcss";
+
+@theme {
+  /* Single page background — applied once on body. Anything that needs an
+     opaque-ish backdrop (mermaid blocks, code chips) reads --bg directly. */
+  --color-bg: var(--bg);
+  --color-surface-primary: var(--surface-primary);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-border: var(--border-color);
+  --color-line-subtle: var(--line-subtle);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-icon-muted: var(--text-icon-muted);
+  --color-item-hover-bg: var(--item-hover-bg);
+  --color-item-active-bg: var(--item-active-bg);
+  --color-kbd-bg: var(--kbd-bg);
+  --color-code-bg: var(--code-bg);
+  --color-link: var(--link-color);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none !important;
+  scrollbar-color: transparent transparent !important;
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+:root {
+  /* Primary tokens — pushed by JS via applyThemeTokens(). Defaults below are
+     last-resort fallbacks for the brief window before settings hydrate. */
+  --accent: #0169cc;
+  --bg-base: #111111;
+  --fg-base: #fcfcfc;
+  --ui-font:
+    -apple-system-body, ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica,
+    "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  --editor-font:
+    -apple-system-body, ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica,
+    "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  --bg-opacity: 0.715;
+  --contrast: 0.5;
+
+  /* Derived background — applied once on body. Editor and settings pages
+     don't add their own bg layer; doing so would multiply opacity and break
+     translucency. Every other surface uses fg-on-transparent so OS vibrancy
+     bleeds through globally when bg-opacity < 1. */
+  --bg: color-mix(in srgb, var(--bg-base) calc(var(--bg-opacity) * 100%), transparent);
+
+  /* Text — fg-on-transparent so the alpha lets the real backdrop (including
+     translucency) show through, instead of fixing a gray mid-tone against the
+     opaque bg-base. */
+  --text-primary: var(--fg-base);
+  --text-secondary: color-mix(in srgb, var(--fg-base) 80%, transparent);
+  --text-muted: color-mix(in srgb, var(--fg-base) 54%, transparent);
+  --text-icon-muted: color-mix(in srgb, var(--fg-base) 40%, transparent);
+
+  /* Overlays — alpha scales with --contrast (slider 0..200 → 0..2). Base
+     factors are tuned so slider=100 lands at "comfortable, fully visible"
+     contrast and slider=200 saturates to opaque. */
+  --border-color: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 24%), transparent);
+  --line-subtle: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 24%), transparent);
+  --line-subtler: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 15%), transparent);
+  --focus-border: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 65%), transparent);
+  --sidebar-divider-right: var(--line-subtler);
+
+  --surface-primary: var(--bg-base);
+  --surface-card: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 16%), transparent);
+  --surface-subtle: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 18%), transparent);
+  --surface-subtle-strong: color-mix(
+    in srgb,
+    var(--fg-base) calc(var(--contrast) * 36%),
+    transparent
+  );
+  --surface-input: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 28%), transparent);
+  --surface-selected: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 26%), transparent);
+  --surface-palette: color-mix(in srgb, var(--bg-base) 80%, transparent);
+
+  --item-hover-bg: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 16%), transparent);
+  --item-active-bg: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 26%), transparent);
+  --tab-active-bg: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 24%), transparent);
+
+  --code-bg: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 16%), transparent);
+  --kbd-bg: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 16%), transparent);
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 58%), transparent);
+  --blockquote-border: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 58%), transparent);
+
+  --link-color: var(--accent);
+
+  /* Select chevron uses fg-base via color-mix in fill — but SVG `stroke` can't
+     consume CSS vars, so we recreate via stroke= with currentColor and apply
+     color: var(--text-icon-muted) on the host. The data-URL fallback here
+     still works for the dropdown-arrow background-image path. */
+  --select-chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='gray' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M3 4.5l3 3 3-3'/></svg>");
+
+  --chrome-control-height: 32px;
+  --chrome-control-padding: 12px;
+  --writer-editor-max-width: 734px;
+  --writer-editor-side-padding: clamp(1.5rem, 4vw, 4rem);
+  --writer-editor-outer-width: calc(
+    var(--writer-editor-max-width) + var(--writer-editor-side-padding) +
+      var(--writer-editor-side-padding)
+  );
+  --writer-editor-font-family: var(--editor-font);
+  --writer-editor-font-size: 16px;
+  --writer-editor-line-height: 1.8;
+  --writer-editor-letter-spacing: 0em;
+
+  font-family: var(--ui-font);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Light mode: settings/theme cards rely on their border alone — a tinted fill
+   reads as a heavy block on a light surface. Inputs also need a lighter fill
+   since dark-on-light overlays read denser than light-on-dark at the same
+   alpha. */
+[data-theme="light"] {
+  --surface-card: transparent;
+  --surface-input: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 20%), transparent);
+}
+
+/* Dark mode: bump tab active bg so the focused tab stands out against the
+   translucent chrome bg without bleeding into the surrounding tab strip. */
+[data-theme="dark"] {
+  --tab-active-bg: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 34%), transparent);
+}
+
+/* App-wide focus indicator for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--accent, rgba(100, 149, 237, 0.7));
+  outline-offset: -2px;
+}
+
+/* Remove focus-visible on CodeMirror — it manages its own cursor */
+.cm-editor:focus-visible,
+/* Remove focus-visible on editor inputs that manage their own styles */
+[data-document-header] textarea:focus-visible,
+[data-frontmatter] input:focus-visible,
+[data-settings-panel] input:focus-visible,
+[data-settings-panel] select:focus-visible,
+[data-settings-panel] button:focus-visible,
+[data-search-overlay] input:focus-visible,
+[data-search-overlay] button:focus-visible {
+  outline: none;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Prevent text selection everywhere except editor and form inputs */
+*:not(.cm-editor):not(.cm-content):not(.cm-line):not(textarea):not(input) {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.cm-editor,
+.cm-editor *,
+textarea,
+input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+* {
+  scroll-padding-block-start: 32px;
+  scroll-padding-block-end: 32px;
+  scrollbar-color: transparent transparent;
+}
+
+*:hover,
+*:active {
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 18px;
+  height: 18px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 6px solid transparent;
+  background-clip: padding-box;
+  border-radius: 9px;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  background-clip: padding-box;
+}
+
+/* cmdk command palette */
+[cmdk-overlay] {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 100;
+}
+
+[cmdk-dialog] {
+  position: fixed;
+  top: 16%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, 90vw);
+  background: var(--surface-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--line-subtler);
+  border-radius: 16px;
+  z-index: 101;
+  overflow: hidden;
+  /* Establish a stacking context so the opacity layer below stays inside. */
+  isolation: isolate;
+}
+
+/* Paint a partially-opaque bg-base layer behind the tinted `--surface-card`
+   so the dialog reads as a card rather than fully see-through translucent
+   chrome, while still letting the backdrop-blur of editor content come
+   through. Adjust the percentage to dial translucency. */
+[cmdk-dialog]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg-base) 55%, transparent);
+  z-index: -1;
+}
+
+[cmdk-input] {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 1px solid var(--line-subtler);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-family: inherit;
+  letter-spacing: -0.02em;
+  outline: none;
+}
+
+[cmdk-list] {
+  max-height: 320px;
+  overflow: auto;
+  padding: 6px;
+  scrollbar-gutter: stable;
+}
+
+[cmdk-group-heading] {
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+[cmdk-item] {
+  padding: 10px 12px;
+  border-radius: 10px;
+
+  font-size: 13px;
+  color: var(--text-secondary);
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+[cmdk-item][data-selected="true"] {
+  background: var(--surface-subtle);
+}
+
+[cmdk-empty] {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
