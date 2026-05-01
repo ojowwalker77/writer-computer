@@ -46,7 +46,12 @@ export function App() {
         <h1 className="headline">Fast and lightweight app for your workspace's markdown files</h1>
 
         <div className="cta">
-          <a className="download" href={__WRITER_DMG_URL__}>
+          <a
+            className="download"
+            href={__WRITER_DMG_URL__}
+            data-umami-event="Download macOS app"
+            data-umami-event-version={__WRITER_VERSION__}
+          >
             <AppleGlyph size={14} />
             <span>Download for MacOS</span>
           </a>
