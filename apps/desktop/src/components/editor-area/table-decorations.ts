@@ -112,16 +112,17 @@ const tableFoldExtension = foldableSyntaxFacet.of({
 const tableTheme = EditorView.baseTheme({
   ".cm-table-widget": {
     padding: "0.25em 0",
+    overflowX: "auto",
   },
   ".cm-table-widget table": {
     borderCollapse: "collapse",
-    width: "100%",
     fontFamily: "'SF Mono', Menlo, Monaco, Consolas, monospace",
     fontSize: "0.9em",
   },
   ".cm-table-widget th, .cm-table-widget td": {
     border: "1px solid var(--border-color, #3e3e42)",
     padding: "0.4em 0.8em",
+    minWidth: "10em",
   },
   ".cm-table-widget th": {
     fontWeight: "600",
