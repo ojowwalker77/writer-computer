@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-04
+
+- Update the app icon.
+
 ## 2026-05-03
 
 - Style the editor's selected-text highlight with a dimmed accent color instead of the browser default. Adds a derived `--editor-selection-bg: color-mix(in srgb, var(--accent) 30%, transparent)` token in `App.css` and applies it to `.cm-selectionBackground` (both focused and unfocused) plus `.cm-content ::selection` as a fallback for the native browser highlight.
