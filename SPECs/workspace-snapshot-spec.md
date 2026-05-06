@@ -1,6 +1,6 @@
 # Workspace Snapshot Spec
 
-> **Follow-up to** `SPECs/workspace-switch-hang-spec.md`. The hang fix is the urgent, user-visible work; this spec is the architectural cleanup that builds on it. Do not start this until the hang fix has shipped and been in the wild for a release or two.
+> **Follow-up to the workspace-switch hang fix.** The hang fix shipped; this spec is the architectural cleanup that builds on the epoch / cancellation primitives it introduced. Do not start until the hang fix has been in the wild for a release or two.
 
 ## Summary
 
@@ -21,7 +21,7 @@ Reference: Zed's `crates/worktree/src/worktree.rs` (`Entry` struct at line 3547,
 ## Non-Goals
 
 - **Full-text / grep search** — content never enters the snapshot. Text search lands as its own spec (`SPECs/fuzzy-search-grep-spec.md`).
-- **Workspace switch cancellation / epoch semantics** — shipped by `SPECs/workspace-switch-hang-spec.md`. This spec assumes those primitives already exist in `AppState` and just hooks into them.
+- **Workspace switch cancellation / epoch semantics** — shipped with the workspace-switch hang fix. This spec assumes those primitives already exist in `AppState` and just hooks into them.
 - Adopting Zed's `SumTree`. `BTreeMap<PathBuf, Entry>` + `HashMap<EntryId, PathBuf>` is sufficient at Writer's scale. Keep the door open: all lookups go through a `Snapshot` abstraction so the backing store can be swapped later if needed.
 - Multi-reader / collaboration-grade snapshot semantics. A single `parking_lot::RwLock<Arc<Snapshot>>` is enough.
 - Lazy subdirectory expansion (Zed's `UnloadedDir` / `PendingDir`). Writer already walks the whole tree upfront cheaply.

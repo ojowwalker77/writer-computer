@@ -1,7 +1,7 @@
 //! Auto-updater state machine, native menu wiring, and release-check plumbing.
 //!
-//! See `SPECs/auto-update-spec.md`. v1 deliberately keeps the entire user-facing
-//! surface in the native app menu and native dialogs — no React components.
+//! v1 deliberately keeps the entire user-facing surface in the native app menu
+//! and native dialogs — no React components.
 
 use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};

@@ -37,7 +37,7 @@ Add full-content fuzzy search and grep across the workspace. Today Writer only h
 ## Backend Strategy
 
 - Use `ripgrep`'s library (`grep` crate) on the Rust side to walk the workspace and match lines.
-- Honor `.gitignore` (coordinate with `SPECs/gitignore-aware-workspace-spec.md`).
+- Honor `.gitignore` (reuse the workspace ignore matcher already wired up for the file index).
 - Match in parallel across files using `rayon` or similar, bounded to a reasonable thread count.
 - Return at most N results per file (default ~10) and M total (default ~500) to keep the palette responsive.
 
@@ -82,7 +82,7 @@ Do not design v1 around the inverted index.
 - `ContentMatch` includes `path`, `line_number`, `line_text`, and `match_ranges` for highlighting.
 - Debounce in the frontend hook, not the backend.
 - Reuse the command palette's fuzzy-match highlighting style for consistency.
-- Coordinate with `SPECs/gitignore-aware-workspace-spec.md` so both the file index and content search share the same ignore filter.
+- Share the existing workspace ignore matcher so the file index and content search apply the same filter.
 
 ## Files Expected To Change
 

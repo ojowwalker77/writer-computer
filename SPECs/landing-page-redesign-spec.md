@@ -296,7 +296,6 @@ Add:
 - `apps/website/src/components/Mark.tsx` (rewrite WriterMark SVG to pixel-W)
 - `apps/website/src/components/Icons.tsx` (delete)
 - `apps/website/public/screenshots/` (new dir)
-- `SPECs/landing-page-spec.md` (mark superseded by this spec, or delete)
 - `TODOS.md` (update the in-progress entry to reference this spec)
 
 ## Responsive Behavior

@@ -6,7 +6,7 @@ Make workspace open and sidebar operations resilient to storage whose I/O latenc
 
 Today `read_directory_impl` (`apps/desktop/src-tauri/src/commands/fs.rs:174`) calls `extract_title` synchronously for every `.md` entry, which opens the file and reads 4 KB. On a local SSD that is ~100 µs per file. On an iCloud-placeholder `.md`, the `open`/`read` can block seconds or minutes waiting for the cloud daemon to materialize the file; on a stalled network mount, it can block indefinitely. The IPC worker running `read_directory` blocks for the entire directory, the sidebar blocks on its `await`, and the workspace feels broken whenever it happens to sit on slow storage.
 
-The PR that closed the workspace-switch hang (`SPECs/workspace-switch-hang-spec.md`) fixed the secondary effect — a slow `read_directory` no longer holds the `workspace_ignore` lock and stalls the _next_ switch. This spec fixes the primary effect: `read_directory` itself should never block on slow per-file I/O in the first place.
+The workspace-switch hang fix addressed the secondary effect — a slow `read_directory` no longer holds the `workspace_ignore` lock and stalls the _next_ switch. This spec fixes the primary effect: `read_directory` itself should never block on slow per-file I/O in the first place.
 
 ## Goals
 

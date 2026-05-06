@@ -1,5 +1,4 @@
-//! Implementation of the standalone `writer` shell launcher. See
-//! [`SPECs/writer-open-cli-spec.md`] for the v1 design.
+//! Implementation of the standalone `writer` shell launcher.
 //!
 //! The CLI itself is kept dependency-free: argv parsing is hand-rolled and
 //! launch behavior is abstracted behind [`Launcher`] so tests can inject a
