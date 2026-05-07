@@ -55,9 +55,22 @@ export async function readTextAloud(text: string) {
 }
 
 async function playAudioBytes(audioBytes: number[], requestId: number) {
-  const blob = new Blob([new Uint8Array(audioBytes)], { type: "audio/mpeg" });
+  const bytes = new Uint8Array(audioBytes);
+  const blob = new Blob([bytes], { type: "audio/mpeg" });
   const url = URL.createObjectURL(blob);
-  const audio = new Audio(url);
+  try {
+    await playAudioUrl(url, requestId, true);
+  } catch (error) {
+    if (!isUnsupportedPlaybackError(error)) throw error;
+    const dataUrl = bytesToDataUrl(bytes);
+    await playAudioUrl(dataUrl, requestId, false);
+  }
+}
+
+async function playAudioUrl(url: string, requestId: number, revokeOnStop: boolean) {
+  const audio = new Audio();
+  audio.preload = "auto";
+  audio.src = url;
   activeUrl = url;
   activeAudio = audio;
 
@@ -77,8 +90,22 @@ async function playAudioBytes(audioBytes: number[], requestId: number) {
   } finally {
     if (requestId === requestSequence && activeAudio === audio) {
       stopCurrentAudio();
+    } else if (revokeOnStop) {
+      URL.revokeObjectURL(url);
     }
   }
+}
+
+function isUnsupportedPlaybackError(error: unknown) {
+  return error instanceof DOMException && error.name === "NotSupportedError";
+}
+
+function bytesToDataUrl(bytes: Uint8Array) {
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 1) {
+    binary += String.fromCharCode(bytes[index]!);
+  }
+  return `data:audio/mpeg;base64,${btoa(binary)}`;
 }
 
 function splitTextForTts(text: string) {
