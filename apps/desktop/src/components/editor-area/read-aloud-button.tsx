@@ -28,6 +28,7 @@ export function ReadAloudButton({ filePath }: ReadAloudButtonProps) {
       await readTextAloud(textToRead);
     } catch (error) {
       console.error("[read-aloud] Failed to read document:", error);
+      window.alert(`Read For Me failed: ${errorMessage(error)}`);
     } finally {
       setIsReading(false);
     }
@@ -46,4 +47,10 @@ export function ReadAloudButton({ filePath }: ReadAloudButtonProps) {
       <span>{isReading ? "Stop" : readLabel}</span>
     </button>
   );
+}
+
+function errorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "Unknown error";
 }

@@ -399,6 +399,7 @@ function editorBodyContextMenuExtension(
                   void readTextAloud(paragraphText).catch((error) => {
                     if (!isDisposed()) {
                       console.error("[read-aloud] Failed to read paragraph:", error);
+                      window.alert(`Read For Me failed: ${errorMessage(error)}`);
                     }
                   });
                 }
@@ -427,6 +428,12 @@ function editorBodyContextMenuExtension(
       return true;
     },
   });
+}
+
+function errorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "Unknown error";
 }
 
 function createEditorExtensions(

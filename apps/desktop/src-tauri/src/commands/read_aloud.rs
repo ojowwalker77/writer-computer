@@ -91,9 +91,68 @@ pub async fn text_to_speech_impl(
 fn read_value_or_env(value: &str, env_key: &str) -> String {
     let value = value.trim();
     if !value.is_empty() {
-        return value.to_string();
+        return normalize_setting_value(value, env_key);
     }
     std::env::var(env_key)
-        .map(|v| v.trim().to_string())
+        .map(|v| normalize_setting_value(&v, env_key))
         .unwrap_or_default()
+}
+
+fn normalize_setting_value(value: &str, env_key: &str) -> String {
+    for line in value.lines().map(str::trim).filter(|line| !line.is_empty()) {
+        if let Some((key, raw_value)) = line.split_once('=') {
+            if key.trim() == env_key {
+                return trim_wrapping_quotes(raw_value.trim()).to_string();
+            }
+        }
+    }
+
+    trim_wrapping_quotes(value.trim()).to_string()
+}
+
+fn trim_wrapping_quotes(value: &str) -> &str {
+    value
+        .strip_prefix('"')
+        .and_then(|value| value.strip_suffix('"'))
+        .or_else(|| {
+            value
+                .strip_prefix('\'')
+                .and_then(|value| value.strip_suffix('\''))
+        })
+        .unwrap_or(value)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn normalize_setting_value_accepts_raw_value() {
+        assert_eq!(
+            normalize_setting_value("  voice-id  ", "ELEVENLABS_VOICE_ID"),
+            "voice-id"
+        );
+    }
+
+    #[test]
+    fn normalize_setting_value_accepts_env_assignment() {
+        assert_eq!(
+            normalize_setting_value(
+                "ELEVENLABS_API_KEY='secret-key'",
+                "ELEVENLABS_API_KEY"
+            ),
+            "secret-key"
+        );
+    }
+
+    #[test]
+    fn normalize_setting_value_finds_matching_env_line() {
+        assert_eq!(
+            normalize_setting_value(
+                "ELEVENLABS_API_KEY=secret-key\nELEVENLABS_VOICE_ID=voice-id",
+                "ELEVENLABS_VOICE_ID"
+            ),
+            "voice-id"
+        );
+    }
 }

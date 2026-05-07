@@ -3,6 +3,7 @@
 ## 2026-05-07
 
 - Add Read For Me for markdown documents. Preferences now includes ElevenLabs API key, voice ID, and model ID fields. The active editor has a Read control for the whole document, and the editor context menu can read the clicked paragraph. Text-to-speech runs through a Rust IPC command using ElevenLabs' `POST /v1/text-to-speech/:voice_id` endpoint and plays the returned MP3 in the app. See `SPECs/read-for-me-spec.md`.
+- Fix Read For Me settings so pasted `ELEVENLABS_API_KEY=...` / `ELEVENLABS_VOICE_ID=...` values are normalized before calling ElevenLabs, and surface playback/request failures in the UI instead of only logging them.
 - Rename the app to better-writer and point updater/release metadata at the fork (`ojowwalker77/writer-computer`) so builds no longer consume releases from the original upstream repository.
 
 ## 2026-05-06
