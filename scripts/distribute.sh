@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="$ROOT_DIR/.env"
-RELEASE_REPO="joelbqz/writer-computer"
+RELEASE_REPO="ojowwalker77/writer-computer"
 
 NOTES_FILE=""
 while [ $# -gt 0 ]; do
@@ -44,7 +44,7 @@ if [ ! -f "$ENV_FILE" ]; then
   echo "  APPLE_ID=\"your@apple.id\""
   echo "  APPLE_PASSWORD=\"xxxx-xxxx-xxxx-xxxx\"  # app-specific password"
   echo "  APPLE_TEAM_ID=\"XXXXXXXXXX\""
-  echo "  TAURI_SIGNING_PRIVATE_KEY=\"/absolute/path/to/writer-updater-key\""
+  echo "  TAURI_SIGNING_PRIVATE_KEY=\"/absolute/path/to/better-writer-updater-key\""
   echo "  TAURI_SIGNING_PRIVATE_KEY_PASSWORD=\"\"  # empty if keypair has no password"
   exit 1
 fi
@@ -112,7 +112,7 @@ fi
 echo "Pushing master to origin..."
 git -C "$ROOT_DIR" push origin master
 
-echo "Building Writer $TAG..."
+echo "Building better-writer $TAG..."
 
 # Build signed and notarized DMG + updater artifacts (.app.tar.gz + .sig).
 cd "$ROOT_DIR/apps/desktop"
@@ -153,7 +153,7 @@ esac
 SIGNATURE=$(cat "$SIG_FILE")
 TAR_NAME=$(basename "$TAR_FILE")
 PUB_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-NOTES="Writer $TAG"
+NOTES="better-writer $TAG"
 DOWNLOAD_URL="https://github.com/$RELEASE_REPO/releases/download/$TAG/$TAR_NAME"
 
 LATEST_JSON="$BUNDLE_DIR/latest.json"
@@ -184,7 +184,7 @@ echo "Creating draft release $TAG on $RELEASE_REPO..."
 
 gh release create "$TAG" "$DMG_FILE" "$TAR_FILE" "$LATEST_JSON" \
   --repo "$RELEASE_REPO" \
-  --title "Writer $TAG" \
+  --title "better-writer $TAG" \
   --notes-file "$NOTES_FILE" \
   --draft
 

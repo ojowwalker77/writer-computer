@@ -1,5 +1,6 @@
 pub mod fs;
 pub mod images;
+pub mod read_aloud;
 pub mod search;
 pub mod settings;
 #[cfg(target_os = "macos")]

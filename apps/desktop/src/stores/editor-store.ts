@@ -31,6 +31,7 @@ export interface OpenFile {
   reloadVersion: number;
   scrollPos: number;
   cursorPos: number;
+  selectedText: string;
   displayDate: string | null;
   stats: DocumentStats;
 }
@@ -86,6 +87,7 @@ interface EditorState {
   reloadFromDisk: (path: string, rawContent: string) => void;
   updateScrollPos: (path: string, pos: number) => void;
   updateCursorPos: (path: string, pos: number) => void;
+  updateSelectedText: (path: string, text: string) => void;
 }
 
 type EditorStateSetter = (
@@ -139,6 +141,7 @@ function createLoadingFile(path: string): OpenFile {
     reloadVersion: 0,
     scrollPos: 0,
     cursorPos: 0,
+    selectedText: "",
     displayDate: null,
     stats: EMPTY_STATS,
   };
@@ -1140,6 +1143,17 @@ export const useEditorStore = create<EditorState>((set, get) => ({
 
       const files = new Map(state.openFiles);
       files.set(path, { ...file, cursorPos: pos });
+      return { openFiles: files };
+    });
+  },
+
+  updateSelectedText: (path: string, text: string) => {
+    set((state) => {
+      const file = state.openFiles.get(path);
+      if (!file || file.selectedText === text) return state;
+
+      const files = new Map(state.openFiles);
+      files.set(path, { ...file, selectedText: text });
       return { openFiles: files };
     });
   },

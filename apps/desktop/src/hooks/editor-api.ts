@@ -46,6 +46,10 @@ export function updateCursorPos(path: string, pos: number) {
   useEditorStore.getState().updateCursorPos(path, pos);
 }
 
+export function updateSelectedText(path: string, text: string) {
+  useEditorStore.getState().updateSelectedText(path, text);
+}
+
 export function updateScrollPos(path: string, pos: number) {
   useEditorStore.getState().updateScrollPos(path, pos);
 }

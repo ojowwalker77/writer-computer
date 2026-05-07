@@ -2,11 +2,7 @@
 
 ## In Progress
 
--
-
 ## Up Next
-
--
 
 ## Backlog
 
@@ -42,6 +38,7 @@ Previously-triaged work organized by phase. Pull into `Up Next` as capacity open
 
 See `CHANGELOG.md` and `git log` for shipped work. Notable items:
 
+- Read for me: ElevenLabs text-to-speech for whole docs, selections, and clicked paragraphs ([`SPECs/read-for-me-spec.md`](SPECs/read-for-me-spec.md)) — 9df48c9
 - Cmd+F polish: safe scroll-into-view, Cmd+G / Cmd+Shift+G next/previous, scrollbar match overview ([`SPECs/cmd-f-spec.md`](SPECs/cmd-f-spec.md))
 - Caret position after history navigation
 - Obsidian-style wikilink parsing — aliases, escaped table pipes, note fragments, same-file fragment links

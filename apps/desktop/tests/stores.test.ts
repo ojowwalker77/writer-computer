@@ -879,6 +879,7 @@ describe("workspace-store closeWorkspace", () => {
             reloadVersion: 0,
             scrollPos: 0,
             cursorPos: 0,
+            selectedText: "",
             displayDate: null,
             stats: { words: 0, characters: 0, paragraphs: 0 },
           },

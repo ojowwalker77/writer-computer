@@ -1,4 +1,4 @@
-//! Implementation of the standalone `writer` shell launcher.
+//! Implementation of the standalone `better-writer` shell launcher.
 //!
 //! The CLI itself is kept dependency-free: argv parsing is hand-rolled and
 //! launch behavior is abstracted behind [`Launcher`] so tests can inject a
@@ -15,21 +15,23 @@ const EXIT_USAGE: u8 = 2;
 const EXIT_RUNTIME: u8 = 3;
 
 pub const USAGE: &str = "\
-Usage: writer [PATH]
+Usage: better-writer [PATH]
 
-Open a folder or markdown file in the Writer desktop app.
+Open a folder or markdown file in the better-writer desktop app.
 
 Arguments:
   PATH              Directory or .md/.markdown file to open. If omitted,
-                    Writer launches with no target.
+                    better-writer launches with no target.
 
 Options:
   -h, --help        Print this help and exit.
   -V, --version     Print version and exit.
 
 Environment:
-  WRITER_APP_PATH   Override the path to the Writer bundle (macOS) or
+  BETTER_WRITER_APP_PATH
+                    Override the path to the better-writer bundle (macOS) or
                     binary (Linux/Windows). Useful for development builds.
+                    WRITER_APP_PATH is still accepted as a legacy fallback.
 ";
 
 /// Version embedded at compile time from the Cargo package.
@@ -96,9 +98,9 @@ fn resolve_input_path(input: &Path, cwd: &Path) -> PathBuf {
 
 /// Trait boundary between the CLI's decision logic and the actual process
 /// spawn. Lets tests observe the exact path that would be handed to the app
-/// without requiring Writer to be installed.
+/// without requiring better-writer to be installed.
 pub trait Launcher {
-    /// Launch the Writer app. `target` is `None` for the no-arg case.
+    /// Launch the better-writer app. `target` is `None` for the no-arg case.
     fn launch(&self, target: Option<&Path>) -> Result<(), LaunchError>;
 }
 
@@ -112,7 +114,7 @@ impl std::fmt::Display for LaunchError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::AppNotFound(msg) => write!(f, "{msg}"),
-            Self::Io(err) => write!(f, "could not launch Writer: {err}"),
+            Self::Io(err) => write!(f, "could not launch better-writer: {err}"),
         }
     }
 }
@@ -136,13 +138,13 @@ impl Launcher for SystemLauncher {
 fn launch_system(target: Option<&Path>) -> Result<(), LaunchError> {
     use std::process::Command;
 
-    let mut cmd = if let Some(override_path) = std::env::var_os("WRITER_APP_PATH") {
+    let mut cmd = if let Some(override_path) = app_path_override() {
         let mut c = Command::new("open");
         c.arg("-a").arg(override_path);
         c
     } else {
         let mut c = Command::new("open");
-        c.arg("-a").arg("Writer");
+        c.arg("-a").arg("better-writer");
         c
     };
 
@@ -153,7 +155,8 @@ fn launch_system(target: Option<&Path>) -> Result<(), LaunchError> {
     let status = cmd.status()?;
     if !status.success() {
         return Err(LaunchError::AppNotFound(
-            "Writer is not installed. Install it from the DMG or set WRITER_APP_PATH.".into(),
+            "better-writer is not installed. Install it from the DMG or set BETTER_WRITER_APP_PATH."
+                .into(),
         ));
     }
     Ok(())
@@ -163,11 +166,11 @@ fn launch_system(target: Option<&Path>) -> Result<(), LaunchError> {
 fn launch_system(target: Option<&Path>) -> Result<(), LaunchError> {
     use std::process::Command;
 
-    let program = std::env::var_os("WRITER_APP_PATH").unwrap_or_else(|| {
+    let program = app_path_override().unwrap_or_else(|| {
         if cfg!(target_os = "windows") {
-            "writer.exe".into()
+            "better-writer.exe".into()
         } else {
-            "writer-desktop".into()
+            "better-writer-desktop".into()
         }
     });
 
@@ -180,12 +183,16 @@ fn launch_system(target: Option<&Path>) -> Result<(), LaunchError> {
         Ok(_) => Ok(()),
         Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
             Err(LaunchError::AppNotFound(format!(
-                "could not find the Writer binary ({}). Install Writer or set WRITER_APP_PATH.",
+                "could not find the better-writer binary ({}). Install better-writer or set BETTER_WRITER_APP_PATH.",
                 program.to_string_lossy()
             )))
         }
         Err(err) => Err(err.into()),
     }
+}
+
+fn app_path_override() -> Option<OsString> {
+    std::env::var_os("BETTER_WRITER_APP_PATH").or_else(|| std::env::var_os("WRITER_APP_PATH"))
 }
 
 /// Entry point for both the binary and integration tests.

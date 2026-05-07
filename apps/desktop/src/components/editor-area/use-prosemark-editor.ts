@@ -56,6 +56,7 @@ import {
   insertNow,
 } from "./markdown-formatting";
 import * as editorApi from "@/hooks/editor-api";
+import { readTextAloud } from "@/hooks/read-aloud-api";
 import { useReloadVersion } from "@/hooks/use-tabs";
 import { getWorkspaceRoot } from "@/hooks/workspace-api";
 import { parseDocument, parseFrontmatter } from "@/lib/frontmatter";
@@ -277,6 +278,23 @@ async function followLink(href: string | null, filePath: string) {
   await openPath(target.path);
 }
 
+function getParagraphTextAt(view: EditorView, pos: number) {
+  const doc = view.state.doc;
+  let startLine = doc.lineAt(pos).number;
+  let endLine = startLine;
+
+  while (startLine > 1 && doc.line(startLine - 1).text.trim() !== "") {
+    startLine -= 1;
+  }
+  while (endLine < doc.lines && doc.line(endLine + 1).text.trim() !== "") {
+    endLine += 1;
+  }
+
+  const from = doc.line(startLine).from;
+  const to = doc.line(endLine).to;
+  return doc.sliceString(from, to).trim();
+}
+
 function linkNavigationExtension(getFilePath: () => string, isDisposed: () => boolean): Extension {
   return Prec.highest(
     EditorView.domEventHandlers({
@@ -326,8 +344,10 @@ function editorBodyContextMenuExtension(
       // Detect if the right-click is on a link
       const pos = view.posAtCoords({ x: event.clientX, y: event.clientY });
       let linkHref: string | null = null;
+      let paragraphText = "";
       if (pos !== null) {
         linkHref = getLinkHref(view, pos) ?? getRawUrl(view, pos) ?? null;
+        paragraphText = getParagraphTextAt(view, pos);
       }
 
       const hasLink = linkHref !== null;
@@ -372,6 +392,15 @@ function editorBodyContextMenuExtension(
             onCopyLink: hasLink
               ? () => {
                   void writeText(linkHref!);
+                }
+              : undefined,
+            onReadParagraph: paragraphText
+              ? () => {
+                  void readTextAloud(paragraphText).catch((error) => {
+                    if (!isDisposed()) {
+                      console.error("[read-aloud] Failed to read paragraph:", error);
+                    }
+                  });
                 }
               : undefined,
             onRunCommand: (id: string) => {
@@ -499,7 +528,12 @@ function createEditorExtensions(
         editorApi.updateContent(getFilePath(), update.state.doc.toString());
       }
       if (update.selectionSet && !isSwap) {
-        editorApi.updateCursorPos(getFilePath(), update.state.selection.main.head);
+        const { from, to, head } = update.state.selection.main;
+        editorApi.updateCursorPos(getFilePath(), head);
+        editorApi.updateSelectedText(
+          getFilePath(),
+          from === to ? "" : update.state.sliceDoc(from, to),
+        );
       }
       if (update.docChanged || update.selectionSet) {
         useEditorSearchStore.getState().bumpDocVersion(update.view);

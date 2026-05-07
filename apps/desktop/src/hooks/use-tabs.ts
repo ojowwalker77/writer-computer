@@ -42,6 +42,10 @@ export function useFileContent(path: string | null) {
   return useEditorStore((s) => (path ? s.openFiles.get(path)?.content : undefined) ?? "");
 }
 
+export function useFileSelectedText(path: string | null) {
+  return useEditorStore((s) => (path ? s.openFiles.get(path)?.selectedText : undefined) ?? "");
+}
+
 export function useFileFrontmatter(path: string | null) {
   return useEditorStore((s) => (path ? s.openFiles.get(path)?.frontmatter : undefined) ?? null);
 }

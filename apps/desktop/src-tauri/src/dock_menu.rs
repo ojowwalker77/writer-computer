@@ -2,7 +2,7 @@
 //!
 //! Tauri exposes the normal application menu, but not AppKit's
 //! `applicationDockMenu:` hook. Registering that selector on Tauri's existing
-//! app delegate lets Writer add recent workspaces above macOS' built-in Dock
+//! app delegate lets better-writer add recent workspaces above macOS' built-in Dock
 //! menu items without taking over the rest of the native menu behavior.
 
 use crate::commands::workspace::load_recent_workspaces;

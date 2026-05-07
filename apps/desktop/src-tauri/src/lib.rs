@@ -25,9 +25,9 @@ use tauri::RunEvent;
 use tauri::{DragDropEvent, Emitter, Manager, WebviewWindow, WindowEvent};
 
 #[cfg(target_os = "macos")]
-const CLI_MENU_INSTALL_LABEL: &str = "Install 'writer' Command Line Tool…";
+const CLI_MENU_INSTALL_LABEL: &str = "Install 'better-writer' Command Line Tool…";
 #[cfg(target_os = "macos")]
-const CLI_MENU_UNINSTALL_LABEL: &str = "Uninstall 'writer' Command Line Tool…";
+const CLI_MENU_UNINSTALL_LABEL: &str = "Uninstall 'better-writer' Command Line Tool…";
 
 #[cfg(target_os = "macos")]
 struct CliMenuItem(MenuItem<tauri::Wry>);
@@ -71,7 +71,7 @@ fn attach_window_handlers(app: &tauri::AppHandle, window: &WebviewWindow) {
 
 /// Open a new `WebviewWindow` inside this process for the given workspace.
 /// Used by the `open_workspace_in_new_window` IPC and by the
-/// single-instance plugin when a second Writer launch arrives with a path.
+/// single-instance plugin when a second better-writer launch arrives with a path.
 ///
 /// If any existing window already hosts `workspace_path`, focus it rather
 /// than building a duplicate — the spec states each workspace gets at most
@@ -164,8 +164,12 @@ fn install_app_menu(
     let cli_item = MenuItemBuilder::with_id("cli.toggle", CLI_MENU_INSTALL_LABEL).build(app)?;
 
     let app_submenu = {
-        let b = SubmenuBuilder::new(app, "Writer")
-            .item(&PredefinedMenuItem::about(app, Some("About Writer"), None)?)
+        let b = SubmenuBuilder::new(app, "better-writer")
+            .item(&PredefinedMenuItem::about(
+                app,
+                Some("About better-writer"),
+                None,
+            )?)
             .separator()
             .item(&check_item)
             .separator()
@@ -282,18 +286,20 @@ fn run_cli_install(app: tauri::AppHandle) {
                 refresh_cli_menu(&app);
                 app.dialog()
                     .message(format!(
-                        "The `writer` command is now installed at {}.\n\nRun `writer .` from any terminal to open the current folder.",
+                        "The `better-writer` command is now installed at {}.\n\nRun `better-writer .` from any terminal to open the current folder.",
                         status.target
                     ))
                     .kind(MessageDialogKind::Info)
-                    .title("Writer CLI Installed")
+                    .title("better-writer CLI Installed")
                     .show(|_| {});
             }
             Err(err) => {
                 app.dialog()
-                    .message(format!("Could not install the writer command.\n\n{err}"))
+                    .message(format!(
+                        "Could not install the better-writer command.\n\n{err}"
+                    ))
                     .kind(MessageDialogKind::Error)
-                    .title("Writer CLI")
+                    .title("better-writer CLI")
                     .show(|_| {});
             }
         }
@@ -313,21 +319,23 @@ fn run_cli_uninstall(app: tauri::AppHandle) {
                         status.target
                     ))
                     .kind(MessageDialogKind::Info)
-                    .title("Writer CLI Removed")
+                    .title("better-writer CLI Removed")
                     .show(|_| {});
             }
             Err(err) => {
                 app.dialog()
-                    .message(format!("Could not remove the writer command.\n\n{err}"))
+                    .message(format!(
+                        "Could not remove the better-writer command.\n\n{err}"
+                    ))
                     .kind(MessageDialogKind::Error)
-                    .title("Writer CLI")
+                    .title("better-writer CLI")
                     .show(|_| {});
             }
         }
     });
 }
 
-/// Handle a second Writer launch while one is already running. With
+/// Handle a second better-writer launch while one is already running. With
 /// `tauri-plugin-single-instance` the OS routes the second process's argv
 /// here via the existing process; we translate that into either opening a
 /// new window for the argv path or surfacing the existing windows if the
@@ -444,6 +452,7 @@ pub fn run() {
             commands::search::index_workspace,
             commands::search::fuzzy_search,
             commands::images::save_clipboard_image,
+            commands::read_aloud::text_to_speech,
             commands::settings::get_settings,
             commands::settings::get_setting,
             commands::settings::set_setting,

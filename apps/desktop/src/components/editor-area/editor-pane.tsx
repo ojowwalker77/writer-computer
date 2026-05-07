@@ -2,6 +2,7 @@ import { ProseMarkEditor } from "./prosemark-editor";
 import { FrontmatterPanel } from "./frontmatter-panel";
 import { EditorScrollContainer } from "./editor-scroll-container";
 import { EditorSearchOverview } from "./editor-search-overview";
+import { ReadAloudButton } from "./read-aloud-button";
 import { useCloseEditorSearchWhenInactive } from "./use-close-editor-search-when-inactive";
 import { useEditorSettingsRef } from "./use-editor-settings";
 import { useIsFileLoading } from "@/hooks/use-tabs";
@@ -52,6 +53,11 @@ export const EditorPane = memo(function EditorPane({ path, isActive }: EditorPan
         isActive ? "relative z-10 h-full" : "absolute inset-0 invisible pointer-events-none"
       }
     >
+      {isActive && (
+        <div className="pointer-events-none absolute right-5 top-20 z-30 md:right-8 md:top-24">
+          <ReadAloudButton filePath={path} />
+        </div>
+      )}
       <EditorScrollContainer ref={scrollContainerRef}>
         <div
           className="mx-auto w-full pt-32 pb-6 md:pt-[9rem]"

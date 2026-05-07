@@ -18,7 +18,8 @@ export type EditorBodyMenuActionId =
   | "paste-plain"
   | "select-all"
   | "open-link"
-  | "copy-link";
+  | "copy-link"
+  | "read-paragraph";
 
 export interface EditorBodyMenuHandlers {
   onCut: () => void;
@@ -28,6 +29,7 @@ export interface EditorBodyMenuHandlers {
   onSelectAll: () => void;
   onOpenLink?: () => void;
   onCopyLink?: () => void;
+  onReadParagraph?: () => void;
   onRunCommand?: (id: string) => void;
 }
 
@@ -226,6 +228,16 @@ export function buildEditorBodyMenuItemsSpec(
       id: "copy-link",
       text: "Copy link",
       action: handlers.onCopyLink,
+    });
+  }
+
+  if (handlers.onReadParagraph) {
+    items.push({ kind: "separator" });
+    items.push({
+      kind: "item",
+      id: "read-paragraph",
+      text: "Read paragraph",
+      action: handlers.onReadParagraph,
     });
   }
 

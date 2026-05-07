@@ -7,7 +7,7 @@ import { join } from "node:path";
 // tauri-webdriver intermediary → embedded plugin → WKWebView → WebdriverIO)
 // works end-to-end. Assertions are intentionally minimal — the goal is
 // infrastructure validation, not feature coverage.
-describe("Writer app", function () {
+describe("better-writer app", function () {
   it("mounts the React app", async function () {
     // Both the welcome screen and the editor branch render
     // `<div class="animate-fade-in">` as the top-level wrapper once the
@@ -42,7 +42,7 @@ describe("Writer app", function () {
       // on success or an error message string on failure.
       const error = await browser.executeAsync(
         (path, content, done) => {
-          (async () => {
+          void (async () => {
             try {
               const { invoke } = window.__TAURI_INTERNALS__;
               await invoke("create_file", { path });

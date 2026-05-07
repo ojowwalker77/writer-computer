@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-05-07
+
+- Add Read For Me for markdown documents. Preferences now includes ElevenLabs API key, voice ID, and model ID fields. The active editor has a Read control for the whole document, and the editor context menu can read the clicked paragraph. Text-to-speech runs through a Rust IPC command using ElevenLabs' `POST /v1/text-to-speech/:voice_id` endpoint and plays the returned MP3 in the app. See `SPECs/read-for-me-spec.md`.
+- Rename the app to better-writer and point updater/release metadata at the fork (`ojowwalker77/writer-computer`) so builds no longer consume releases from the original upstream repository.
+
 ## 2026-05-06
 
 - Polish in-document find (Cmd+F): the active match now scrolls into a clear zone away from the editor's top/bottom fade mask and progressive blur — `search()` is configured with a custom `scrollToMatch` that uses `EditorView.scrollIntoView` with a `yMargin` derived from `EDITOR_SAFE_SCROLL_MARGIN`. Add `Cmd+G` / `Cmd+Shift+G` for next/previous match (handled at `Prec.highest` in the editor keymap and in the find/replace inputs' `onKeyDown`). Add an IDE-style match overview rail along the right edge of the editor pane: thin marks (one per match, accent-colored for the active match) render outside the masked scroll area, click to jump. The query is mirrored into `editor-search-store` so the overview can subscribe without prop-drilling. See `SPECs/cmd-f-spec.md`.

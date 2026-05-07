@@ -27,14 +27,14 @@ export function App() {
     <div className="page">
       <main className="hero">
         <header className="site-header">
-          <a className="brand" href="/" aria-label="Writer">
+          <a className="brand" href="/" aria-label="better-writer">
             <WriterMark size={18} />
             <span className="brand-rule" aria-hidden="true" />
           </a>
           <nav className="site-nav">
             <a
               className="pill pill-ghost"
-              href="https://x.com/joelbqz"
+              href={__WRITER_REPO_URL__}
               target="_blank"
               rel="noopener noreferrer"
               data-umami-event="Open updates"

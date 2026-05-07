@@ -285,6 +285,30 @@
       "category": "Search",
       "type": "number",
       "default": 50
+    },
+    {
+      "key": "read-aloud.elevenlabs-api-key",
+      "label": "ElevenLabs API Key",
+      "description": "API key used for Read For Me text-to-speech",
+      "category": "Read For Me",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "read-aloud.elevenlabs-voice-id",
+      "label": "ElevenLabs Voice ID",
+      "description": "Voice ID used when reading documents aloud",
+      "category": "Read For Me",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "read-aloud.elevenlabs-model-id",
+      "label": "ElevenLabs Model ID",
+      "description": "Text-to-speech model used for Read For Me",
+      "category": "Read For Me",
+      "type": "string",
+      "default": "eleven_multilingual_v2"
     }
   ]
 }

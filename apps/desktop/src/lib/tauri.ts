@@ -207,3 +207,13 @@ export function saveClipboardImage(
 ): Promise<{ relative_path: string; absolute_path: string }> {
   return invoke("save_clipboard_image", { markdownFilePath, imageData, format });
 }
+
+// Read For Me commands
+export function textToSpeech(
+  text: string,
+  apiKey: string,
+  voiceId: string,
+  modelId: string,
+): Promise<number[]> {
+  return invoke("text_to_speech", { text, apiKey, voiceId, modelId });
+}
